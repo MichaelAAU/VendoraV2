@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "211107672995",
+    "firebase_url": "https://luminous-torch-4376.firebaseio.com",
+    "project_id": "luminous-torch-4376",
+    "storage_bucket": "luminous-torch-4376.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:211107672995:android:ad3c20af4accf20e",
+        "android_client_info": {
+          "package_name": "com.aaufolks.android.vendora"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "211107672995-2ju351gqi3hes18n4tij3ednm5h86dim.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.aaufolks.android.vendora",
+            "certificate_hash": "26f74a45b8159a7e59a5b12ec8e1f58221d8e3df"
+          }
+        },
+        {
+          "client_id": "211107672995-o0f5q18k8aih0hroqbaqjsns43i7310j.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAnOfmyc2xoZ7qnCTJY5ZAi7SJ01CWqh3U"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "211107672995-o0f5q18k8aih0hroqbaqjsns43i7310j.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

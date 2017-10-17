@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Vendora</string>
+    <string name="reserve">Manage Reservations</string>
+    <string name="pay">Choose a payment method</string>
+    <string name="choose_payment_title">Your payment method:</string>
+    <string name="make_reservation_title">Make a reservation:</string>
+    <string name="manage_reservations_title">Delete a reservation:</string>
+    <string name="service_name">Phone Card Emulation</string>
+    <string name="card_title">Device ID &amp; Payment Card</string>
+</resources>

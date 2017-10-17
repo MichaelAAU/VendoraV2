@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest package="com.aaufolks.android.vendora"
+          xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <uses-sdk
+        android:minSdkVersion="19"
+        android:targetSdkVersion="19" />
+
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.NFC" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+
+    <uses-feature android:name="android.hardware.nfc.hce" android:required="true" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <meta-data android:name="com.google.android.maps.v2.API_KEY"
+                   android:value="AIzaSyBaQHVRATbkawGw_dNIDu6QfvKgFjRZ4HE"/>
+        <activity android:name=".Controller_Classes.LogoActivity"
+                  android:theme="@style/AppTheme.NoActionBar"
+                  android:launchMode="singleTop">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+        <activity android:name=".Controller_Classes.ProductActivity"
+                  android:launchMode="singleTop">
+        </activity>
+        <activity android:name=".Controller_Classes.VMActivity"
+                  android:parentActivityName=".Controller_Classes.ProductActivity"
+                  android:launchMode="singleTop">
+        </activity>
+        <activity android:name=".Controller_Classes.NFCActivity"
+                  android:parentActivityName=".Controller_Classes.VMActivity"
+                  android:launchMode="singleTop">
+        </activity>
+        <activity android:name=".Controller_Classes.CongratsActivity"
+                  android:parentActivityName=".Controller_Classes.ProductActivity">
+        </activity>
+        <service android:name=".Services.CardEmulationService"
+                 android:exported="true"
+                 android:permission="android.permission.BIND_NFC_SERVICE">
+            <!-- Intent filter indicating that we support card emulation. -->
+            <intent-filter>
+                <action android:name="android.nfc.cardemulation.action.HOST_APDU_SERVICE"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+            <!-- Required XML configuration file, listing the AIDs that we are emulating cards
+                 for. This defines what protocols our card emulation service supports. -->
+            <meta-data android:name="android.nfc.cardemulation.host_apdu_service"
+                       android:resource="@xml/aid_list"/>
+        </service>
+    </application>
+
+</manifest>

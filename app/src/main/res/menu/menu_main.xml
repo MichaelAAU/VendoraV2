@@ -1,0 +1,16 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      xmlns:tools="http://schemas.android.com/tools"
+      tools:context=".VMActivity">
+
+    <item android:id="@+id/manage_reservations"
+          android:title="@string/reserve"
+          android:orderInCategory="100"
+          app:showAsAction="always"/>
+
+    <item android:id="@+id/choose_payment"
+          android:title="@string/pay"
+          android:orderInCategory="101"
+          app:showAsAction="always"/>
+
+</menu>
