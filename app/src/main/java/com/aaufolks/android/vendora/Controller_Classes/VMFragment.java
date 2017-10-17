@@ -279,6 +279,10 @@ public class VMFragment extends SupportMapFragment
                                         vmsWProduct.get(mLastSelectedMarkerIndex).getVMId(), vmsWProduct.get(mLastSelectedMarkerIndex).getVMName());
                                 MyReservations.get().getMyReservations().add(mReservation);
                                 vmsWProduct.get(mLastSelectedMarkerIndex).setProdAvailable(false);
+                                mLastSelectedMarker.setSnippet("Address : " + vmsWProduct.get(mLastSelectedMarkerIndex).getVMAddress()
+                                        + "\n" + productName + " is " + (vmsWProduct.get(mLastSelectedMarkerIndex).isProdAvailable() ? "AVAILABLE" : "RESERVED")
+                                        + "\nDistance from you : " + vmsWProduct.get(mLastSelectedMarkerIndex).getDistanceFromYou() + " meters"
+                                        + "\nTAP TO MAKE A RESERVATION");
                                 mLastSelectedMarker.showInfoWindow();
                                 final MediaPlayer mp = MediaPlayer.create(getContext(), R.raw.success);
                                 mp.start();
@@ -336,6 +340,10 @@ public class VMFragment extends SupportMapFragment
                                 progressCircle.dismiss();
                                 MyReservations.get().getMyReservations().remove(choice);
                                 vmsWProduct.get(mLastSelectedMarkerIndex).setProdAvailable(true);
+                                mLastSelectedMarker.setSnippet("Address : " + vmsWProduct.get(mLastSelectedMarkerIndex).getVMAddress()
+                                        + "\n" + productName + " is " + (vmsWProduct.get(mLastSelectedMarkerIndex).isProdAvailable() ? "AVAILABLE" : "RESERVED")
+                                        + "\nDistance from you : " + vmsWProduct.get(mLastSelectedMarkerIndex).getDistanceFromYou() + " meters"
+                                        + "\nTAP TO MAKE A RESERVATION");
                                 mLastSelectedMarker.showInfoWindow();
                                 final MediaPlayer mp = MediaPlayer.create(getContext(), R.raw.success);
                                 mp.start();

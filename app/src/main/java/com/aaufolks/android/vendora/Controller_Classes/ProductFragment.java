@@ -3,12 +3,10 @@ package com.aaufolks.android.vendora.Controller_Classes;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.CardView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -33,13 +31,11 @@ import com.aaufolks.android.vendora.Pop_up_screens.ChoosePaymentFragment;
 import com.aaufolks.android.vendora.Pop_up_screens.FirstPaymentFragment;
 import com.aaufolks.android.vendora.Pop_up_screens.ManageReservationsFragment;
 import com.aaufolks.android.vendora.R;
-import com.android.volley.DefaultRetryPolicy;
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import static com.aaufolks.android.vendora.R.drawable.pay_with_cash;
 import static com.aaufolks.android.vendora.R.drawable.pay_with_mobile_pay;
@@ -60,8 +56,8 @@ public class ProductFragment extends Fragment {
 
     public RecyclerView mProductRecyclerView;         // RecyclerView creates only enough views to fill the screen and scrolls them
     private ProductAdapter mAdapter;                  // Adapter controls the data to be displayed by RecyclerView
-    private final int MY_SOCKET_TIMEOUT_MS = 10000;
     private ProgressDialog progressCircle;
+    private boolean cancelled;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {   // it is Public because it can be called by various activities hosting it
@@ -244,16 +240,11 @@ public class ProductFragment extends Fragment {
                 getActivity().invalidateOptionsMenu();
                 break;
             }
-            case 3: {       // MANAGING RESERVATIONS
+            case 3: {       // DELETING RESERVATIONS
 
                 final int choice = (int) data.getSerializableExtra(ManageReservationsFragment.EXTRA_CHOICE);
 
                 if (choice == -1) break;
-
-                final String myUrl4 = "http://uncomely-story.000webhostapp.com/public/upload.php?action=delete&vm_id="
-                        + MyReservations.get().getMyReservations().get(choice).getVMId() + "&item_type_id="
-                        + MyReservations.get().getMyReservations().get(choice).getProductId() + "&customer_id="
-                        + Products.get(getContext()).getCustomerId() + "&lkey=250250250";
 
                 progressCircle = new ProgressDialog(getContext());
                 progressCircle.setCancelable(true);
@@ -261,59 +252,41 @@ public class ProductFragment extends Fragment {
                 progressCircle.setIndeterminate(true);
                 progressCircle.show();
 
-                //                  *** CANCELLING RESERVATIONS FROM DATABASE-SERVER    ***
-
-                //creating a requestQueue object that holds http-request objects
-                final RequestQueue requestQueue = Volley.newRequestQueue(getContext());
-                requestQueue.start();
-
-                //setting up the response listener in case of success & populating Products Array
-                final Response.Listener<String> onSuccessListener = new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        progressCircle.dismiss();
-                        response = response.trim();
-                        Log.d("Vendora", "My URL: " + myUrl4);
-                        Log.d("Vendora", "CANCEL Reservation Responce: " + response);
-                        if (response.contains("Reservation canceled")) {
-                            MyReservations.get().getMyReservations().remove(choice);
-                            final MediaPlayer mp = MediaPlayer.create(getContext(), R.raw.success);
-                            mp.start();
-                            Toast.makeText(getContext(), "Reservation of: " +
-                                    Products.get(getContext()).getProduct(MyReservations.get().getMyReservations().get(choice).getProductId()).getProductName()
-                                    + " canceled!", Toast.LENGTH_SHORT).show();
-                            getActivity().invalidateOptionsMenu();
-                        } else {
+                FirebaseDatabase database = FirebaseDatabase.getInstance();
+                DatabaseReference myRef = database.getReference();
+                cancelled = false;
+                final DatabaseReference mRRef = myRef.child("Products & Status").child(MyReservations.get().getMyReservations().get(choice).getVMId());
+                mRRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        for (int i = 1; i <= dataSnapshot.getChildrenCount(); i++) {
+                            String prodNumString = String.valueOf(i);
+                            String prodCat = (String) dataSnapshot.child(prodNumString).child("productCategory").getValue();
+                            String prodStat = (String) dataSnapshot.child(prodNumString).child("productStatus").getValue();
+                            String prodCust = (String) dataSnapshot.child(prodNumString).child("customerID").getValue();
+                            if (prodCat.equals(String.valueOf(Products.get(getContext()).getChosenProduct())) &&
+                                    prodStat.equals("Reserved")) {
+                                mRRef.child(prodNumString).child("customerID").setValue(null);
+                                mRRef.child(prodNumString).child("productStatus").setValue("Available");
+                                progressCircle.dismiss();
+                                MyReservations.get().getMyReservations().remove(choice);
+                                final MediaPlayer mp = MediaPlayer.create(getContext(), R.raw.success);
+                                mp.start();
+                                Toast.makeText(getContext(), "Reservation of: " + Products.get(getContext()).getProduct(MyReservations.get().
+                                        getMyReservations().get(choice).getProductId()).getProductName() + " canceled!", Toast.LENGTH_SHORT).show();
+                                getActivity().invalidateOptionsMenu();
+                                cancelled = true;
+                                break;
+                            }
+                        }
+                        if (cancelled == false) {
+                            progressCircle.dismiss();
                             final MediaPlayer mp = MediaPlayer.create(getContext(), R.raw.error);
                             mp.start();
-                            Toast.makeText(getContext(), "Reservation cancelation NOT successful!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), "Product no longer available!", Toast.LENGTH_LONG).show();
                         }
-                        requestQueue.stop();
                     }
-                };
-                //setting up the response listener in case of error
-                final Response.ErrorListener onErrorListener = new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        progressCircle.dismiss();
-                        error.printStackTrace();
-                        requestQueue.stop();
-                    }
-                };
-
-                // request a String response from the provided url
-                StringRequest stringRequest = new StringRequest(Request.Method.GET, myUrl4, onSuccessListener, onErrorListener);
-
-                // set a timeout for the request
-                stringRequest.setRetryPolicy(new DefaultRetryPolicy(
-                        MY_SOCKET_TIMEOUT_MS,
-                        DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                        DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-
-                Log.d("Tag", "Adding request: " + myUrl4);
-                // add the request object to the request queue to get it serviced and delivered back
-
-                requestQueue.add(stringRequest);
+                    public void onCancelled(DatabaseError databaseError) { }
+                });
                 break;
             }
         }
