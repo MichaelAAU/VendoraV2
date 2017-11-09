@@ -4,13 +4,6 @@ import android.content.Context;
 import android.content.res.AssetManager;
 import android.util.Log;
 
-import com.android.volley.DefaultRetryPolicy;
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -28,6 +21,7 @@ import static java.lang.Integer.parseInt;
 
 /**
  * Created by michalisgratsias on 27/10/16.
+ * Rewritten by michalisgratsias on 16/10/17.
  */
 
 public class Products {
@@ -91,7 +85,7 @@ public class Products {
 
         DatabaseReference m2Ref = myRef.child("Product Categories");
         m2Ref.addChildEventListener(new ChildEventListener() {
-            // Retrieve available product categories and prices
+            // Retrieve AVAILABLE product categories and prices
             @Override
             public void onChildAdded(DataSnapshot snapshot, String previousChildKey) {
                 String prodID = (String) snapshot.getKey();

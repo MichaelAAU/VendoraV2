@@ -81,6 +81,7 @@ import static com.aaufolks.android.vendora.R.drawable.reservations_5;
 
 /**
  * Created by michalisgratsias on 2/11/16.
+ * Rewritten by michalisgratsias on 16/10/17.
  */
 
 public class VMFragment extends SupportMapFragment
@@ -445,6 +446,9 @@ public class VMFragment extends SupportMapFragment
 
                 // Create a new MobilePay Payment object.
                 mPayment = new Payment();
+
+                // Set the callback URL
+                mPayment.setServerCallbackUrl("https://us-central1-luminous-torch-4376.cloudfunctions.net/addMessage");
 
                 // Set the product name.
                 mPayment.setProductName(productName);

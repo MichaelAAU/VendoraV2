@@ -2,6 +2,7 @@ package com.aaufolks.android.vendora.Model_Classes;
 
 /**
  * Created by michalisgratsias on 12/11/2016.
+ * Rewritten by michalisgratsias on 5/11/2017.
  */
 
 public class Reservation {

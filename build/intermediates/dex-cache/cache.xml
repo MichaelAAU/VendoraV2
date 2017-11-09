@@ -3,11 +3,38 @@
 
     <item
         is-multidex="true"
+        jar="/Users/michalisgratsias/.android/build-cache/74b97d7d0086193ece431a9f72d5fa0602e71d09/output/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="26.0.1"
+        sha1="2f552156e824f318819b664ab932f61d12cfa2f4">
+        <dex dex="/Users/michalisgratsias/AndroidStudioProjects/VendoraV2/app/build/intermediates/transforms/dex/debug/folders/1000/10/classes_f1500e25698db3dd3ddf9074d804e5ac9c904511/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/michalisgratsias/.android/build-cache/f76cf4b18bc1b95c8fad22ad25d2da25578ffc2f/output/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="26.0.1"
+        sha1="56f252cb04c2373cfd06a2baa1266cadd1c891f7">
+        <dex dex="/Users/michalisgratsias/AndroidStudioProjects/VendoraV2/app/build/intermediates/transforms/dex/debug/folders/1000/10/classes_7717b7a4da22baae2cb974106e02d995666cfe07/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/michalisgratsias/.android/build-cache/5ef92687b466435e59857d7378957d325caf1cfd/output/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="26.0.1"
+        sha1="a5423d080755901cc399daa76490ee65820e75fb">
+        <dex dex="/Users/michalisgratsias/AndroidStudioProjects/VendoraV2/app/build/intermediates/transforms/dex/debug/folders/1000/10/classes_ba46140b1973a1efa2d6ddd03fae5e07c6ee600f/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
         jar="/Users/michalisgratsias/AndroidStudioProjects/VendoraV2/app/build/intermediates/incremental-classes/debug/instant-run-bootstrap.jar"
         jumboMode="true"
         optimize="true"
-        revision="25.0.0"
-        sha1="66298bb74bf9057fb1833f09695ad4293364b945">
+        revision="26.0.1"
+        sha1="f588e701f46a1b403f2042df06bd61324cdd7955">
         <dex dex="/Users/michalisgratsias/AndroidStudioProjects/VendoraV2/app/build/intermediates/transforms/dex/debug/folders/1000/10000/instant-run-bootstrap_b6d21543624d6e3b104279da839d8a74508df452/classes.dex" />
     </item>
     <item
@@ -15,18 +42,18 @@
         jar="/Users/michalisgratsias/AndroidStudioProjects/VendoraV2/app/build/intermediates/incremental-runtime-classes/debug/instant-run.jar"
         jumboMode="true"
         optimize="true"
-        revision="25.0.0"
+        revision="26.0.1"
         sha1="3be78ebc2706b2e1fe2f12d5726887a92d6c183b">
         <dex dex="/Users/michalisgratsias/AndroidStudioProjects/VendoraV2/app/build/intermediates/transforms/dex/debug/folders/1000/10000/instant-run_0b67be8d6006fbfab4a9f2aa94d08247b5594053/classes.dex" />
     </item>
     <item
         is-multidex="true"
-        jar="/Users/michalisgratsias/AndroidStudioProjects/VendoraV2/app/libs/mobilepay-appswitch-1.8.1.jar"
+        jar="/Users/michalisgratsias/AndroidStudioProjects/VendoraV2/app/libs/mobilepay-appswitch-1.8.0.jar"
         jumboMode="true"
         optimize="true"
-        revision="25.0.0"
-        sha1="c8ca67d2c63615fa9c536df43c7ba21b47f07f3e">
-        <dex dex="/Users/michalisgratsias/AndroidStudioProjects/VendoraV2/app/build/intermediates/transforms/dex/debug/folders/1000/2/mobilepay-appswitch-1.8.1_ec84ad68a6327293e61e179d62e776d407c35f1e/classes.dex" />
+        revision="26.0.1"
+        sha1="56b1286aaf53dedb160e3c69bc435d095ce35fc4">
+        <dex dex="/Users/michalisgratsias/AndroidStudioProjects/VendoraV2/app/build/intermediates/transforms/dex/debug/folders/1000/2/mobilepay-appswitch-1.8.0_8e7ff18f766ebb120e7dc2dcb8b29834e3c946f8/classes.dex" />
     </item>
 
 </items>

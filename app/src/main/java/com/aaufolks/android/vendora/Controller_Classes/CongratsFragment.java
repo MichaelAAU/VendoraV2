@@ -41,6 +41,7 @@ import static com.aaufolks.android.vendora.R.drawable.reservations_5;
 
 /**
  * Created by michalisgratsias on 13/11/2016.
+ * Rewritten by michalisgratsias on 16/10/2017.
  */
 
 public class CongratsFragment extends Fragment {

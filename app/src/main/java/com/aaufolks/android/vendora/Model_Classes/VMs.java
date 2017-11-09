@@ -22,6 +22,7 @@ import static android.content.ContentValues.TAG;
 
 /**
  * Created by michalisgratsias on 3/11/16.
+ * Rewritten by michalisgratsias on 16/10/17.
  */
 
 public class VMs implements java.io.Serializable {

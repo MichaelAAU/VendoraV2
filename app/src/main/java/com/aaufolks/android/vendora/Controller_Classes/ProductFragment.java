@@ -7,6 +7,8 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.CardView;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -27,10 +29,14 @@ import com.aaufolks.android.vendora.Model_Classes.MyReservations;
 import com.aaufolks.android.vendora.Model_Classes.Product;
 import com.aaufolks.android.vendora.Model_Classes.Products;
 import com.aaufolks.android.vendora.Model_Classes.VMs;
+import com.aaufolks.android.vendora.Model_Classes.VendingMachine;
 import com.aaufolks.android.vendora.Pop_up_screens.ChoosePaymentFragment;
 import com.aaufolks.android.vendora.Pop_up_screens.FirstPaymentFragment;
 import com.aaufolks.android.vendora.Pop_up_screens.ManageReservationsFragment;
 import com.aaufolks.android.vendora.R;
+import com.firebase.ui.auth.IdpResponse;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -50,19 +56,40 @@ import static com.aaufolks.android.vendora.R.drawable.reservations_5;
 
 /**
  * Created by michalisgratsias on 26/10/2016.
+ * Rewritten by michalisgratsias on 9/11/2017.
  */
 
 public class ProductFragment extends Fragment {
 
+    private static final String ARG_ID_TOKEN = "id_token";
     public RecyclerView mProductRecyclerView;         // RecyclerView creates only enough views to fill the screen and scrolls them
     private ProductAdapter mAdapter;                  // Adapter controls the data to be displayed by RecyclerView
     private ProgressDialog progressCircle;
     private boolean cancelled;
 
+    // We use a method to create this Fragment (instead of using Constructor) and pass Arguments
+    public static ProductFragment newInstance(IdpResponse response) {
+        Bundle args = new Bundle();                         // creates Bundle for arguments
+        if (response != null) {
+            String idToken = response.getIdpToken();
+            Log.d("Tag", "Id_Token: " + idToken);
+            args.putString(ARG_ID_TOKEN, idToken);          // adds id_token to Bundle
+        }
+        ProductFragment fragment = new ProductFragment();   // creates Fragment instance
+        fragment.setArguments(args);                        // sets Arguments
+        return fragment;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {   // it is Public because it can be called by various activities hosting it
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        Log.d("Tag", "Name: " + user.getDisplayName());
+        Log.d("Tag", "Email: " + user.getEmail());
+        Log.d("Tag", "Phone: " + user.getPhoneNumber());
+        if (user.getPhotoUrl() != null) {Log.d("Tag", "Photo: " + "Has photo");
+        } else Log.d("Tag", "Photo: " + "null");
     }
 
     @Override
