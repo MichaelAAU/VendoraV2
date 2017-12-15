@@ -65,13 +65,13 @@ public class LogoActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {   // it is Public because it can be called by various activities hosting it
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_logo);
         Products.get(getApplicationContext()).getProducts();
         active = true;
 
-        // 1. Check if user already signed in otherwise continue
+        // 1. Check if user already signed in, otherwise continue
         FirebaseAuth auth = FirebaseAuth.getInstance();
         if (auth.getCurrentUser() != null) {
             startSignedInActivity(null);
@@ -88,75 +88,44 @@ public class LogoActivity extends AppCompatActivity {
 
     @Override
     public void onResume() {
-        super.onResume();
-        final MediaPlayer mp = MediaPlayer.create(getApplicationContext(), R.raw.intro);
-        mp.start();
+        super.onResume(); final MediaPlayer mp = MediaPlayer.create(getApplicationContext(), R.raw.intro); mp.start(); // play sound
         new Timer().schedule(new TimerTask() {
             @Override
             public void run() {
                 if (active) {
-                    startActivityForResult(
-                            //2. Create Authentication instance (based on default app) and sign-in by building a sign-in intent
+                    startActivityForResult( // Create Authentication instance on default app and sign-in by building a sign-in intent
                             AuthUI.getInstance().createSignInIntentBuilder()
-                                    .setLogo(R.drawable.vendora_small_icon) //can be set
-                                    .setAvailableProviders(getSelectedProviders()) //can be listed
-                                    .setTosUrl(GOOGLE_TOS_URL) //url included
-                                    .setPrivacyPolicyUrl(GOOGLE_PRIVACY_POLICY_URL) //url included
-                                    .setIsSmartLockEnabled(false, true) //can be set false/true
+                                    .setLogo(R.drawable.vendora_small_icon)
+                                    .setAvailableProviders(getSelectedProviders())
+                                    .setTosUrl(GOOGLE_TOS_URL)
+                                    .setPrivacyPolicyUrl(GOOGLE_PRIVACY_POLICY_URL)
+                                    .setIsSmartLockEnabled(true, true)
                                     .setAllowNewEmailAccounts(true)
-                                    .build(),
-                            RC_SIGN_IN);
+                                    .build(), RC_SIGN_IN); // RC = Request code for sign-in
                 }
             }
-        }, 1000);
+        }, 1000); // short delay
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == RC_SIGN_IN) {
-            handleSignInResponse(resultCode, data);
-            return;
-        }
+        if (requestCode == RC_SIGN_IN) { handleSignInResponse(resultCode, data); return;}
         showSnackbar(R.string.unknown_response);
     }
 
     @MainThread
-    private void handleSignInResponse(int resultCode, Intent data) {
-        // extracting the ID token from the response of the result intent that the Identity Provider returned
-        IdpResponse response = IdpResponse.fromResultIntent(data);
-
-        // Successfully signed in
-        if (resultCode == RESULT_OK) {
-            final MediaPlayer mp = MediaPlayer.create(getApplicationContext(), R.raw.success);
-            mp.start();
-            startSignedInActivity(response);
-            finish();
-            return;
-        } else {
-            // Sign in failed
-            if (response == null) {
-                // User pressed back button
-                showSnackbar(R.string.sign_in_cancelled);
-                return;
-            }
-
-            if (response.getErrorCode() == ErrorCodes.NO_NETWORK) {
-                showSnackbar(R.string.no_internet_connection);
-                return;
-            }
-
-            if (response.getErrorCode() == ErrorCodes.UNKNOWN_ERROR) {
-                showSnackbar(R.string.unknown_error);
-                return;
-            }
+    private void handleSignInResponse(int resultCode, Intent data) {    // extracting the ID token from the response of the result intent
+        IdpResponse response = IdpResponse.fromResultIntent(data);      // that the Identity Provider (idp) returned
+        if (resultCode == RESULT_OK) {                                  // Successfully signed in
+            final MediaPlayer mp = MediaPlayer.create(getApplicationContext(), R.raw.success); mp.start(); // play sound
+            startSignedInActivity(response); finish(); return;
+        } else {                                                        // Sign in failed
+            if (response == null) {showSnackbar(R.string.sign_in_cancelled); return;} // User pressed back button
+            if (response.getErrorCode() == ErrorCodes.NO_NETWORK) {showSnackbar(R.string.no_internet_connection); return;}
+            if (response.getErrorCode() == ErrorCodes.UNKNOWN_ERROR) {showSnackbar(R.string.unknown_error); return;}
         }
         showSnackbar(R.string.unknown_sign_in_response);
-    }
-
-    private void startSignedInActivity(IdpResponse response) {
-        Intent intent = ProductActivity.newIntent(getApplicationContext(), response);
-        getApplicationContext().startActivity(intent);
     }
 
     @MainThread
@@ -166,6 +135,11 @@ public class LogoActivity extends AppCompatActivity {
         selectedProviders.add(new IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build());
         selectedProviders.add(new IdpConfig.Builder(AuthUI.PHONE_VERIFICATION_PROVIDER).build());
         return selectedProviders;
+    }
+
+    private void startSignedInActivity(IdpResponse response) {
+        Intent intent = ProductActivity.newIntent(getApplicationContext(), response);
+        getApplicationContext().startActivity(intent);
     }
 
     @MainThread

@@ -55,8 +55,10 @@ public class VMs implements java.io.Serializable {
                         String prodCust = (String) grandchild.child("customerID").getValue();
                         if (prodCat.equals(String.valueOf(chosen)) && !mVMAvailable.contains(vmID)
                                 && prodStat.equals("Available")) mVMAvailable.add(vmID);
-                        if ((prodStat.equals("Reserved") && prodCust.equals(Settings.Secure.getString(context.getContentResolver(),
-                                Settings.Secure.ANDROID_ID)))) mVMReserved.add(vmID);
+                        if (prodCust != null) {
+                            if ((prodStat.equals("Reserved") && prodCust.equals(Settings.Secure.getString(context.getContentResolver(),
+                                    Settings.Secure.ANDROID_ID)))) mVMReserved.add(vmID);
+                        }
                     }
                 }
             }

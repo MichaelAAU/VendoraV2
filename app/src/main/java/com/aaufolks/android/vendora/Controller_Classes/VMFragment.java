@@ -447,11 +447,8 @@ public class VMFragment extends SupportMapFragment
                 // Create a new MobilePay Payment object.
                 mPayment = new Payment();
 
-                // Set the callback URL
+                // Set the callback URL - deprecated
                 mPayment.setServerCallbackUrl("https://us-central1-luminous-torch-4376.cloudfunctions.net/addMessage");
-
-                // Set the product name.
-                mPayment.setProductName(productName);
 
                 // Set the product price.
                 mPayment.setProductPrice(BigDecimal.valueOf(productPrice));
@@ -511,7 +508,7 @@ public class VMFragment extends SupportMapFragment
                             String prodCat = (String) dataSnapshot.child(prodNumString).child("productCategory").getValue();
                             String prodStat = (String) dataSnapshot.child(prodNumString).child("productStatus").getValue();
                             String prodCust = (String) dataSnapshot.child(prodNumString).child("customerID").getValue();
-                            if (prodCat.equals(String.valueOf(Products.get(getContext()).getChosenProduct())) && prodStat.equals("Reserved")) {
+                            if (prodCat.equals(String.valueOf(Products.get(getContext()).getChosenProduct())) && prodStat.equals("Reserved") && prodCust.equals(Products.get(getContext()).getCustomerId())) {
                                 mRRef.child(prodNumString).child("customerID").setValue(null);
                                 mRRef.child(prodNumString).child("productStatus").setValue("Available");
                                 progressCircle.dismiss();

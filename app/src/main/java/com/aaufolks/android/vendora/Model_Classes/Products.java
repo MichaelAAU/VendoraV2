@@ -53,8 +53,7 @@ public class Products {
 
         DatabaseReference m1Ref = myRef.child("Products & Status");
         m1Ref.addChildEventListener(new ChildEventListener() {
-            // Retrieve all available products as they are in the database
-            @Override
+            @Override // Retrieve all available products as they are in the database
             public void onChildAdded(DataSnapshot snapshot, String previousChildKey) {
                 String vmID = (String) snapshot.getKey();
                 Log.d("Tag", "vmId: " + vmID);
@@ -68,25 +67,15 @@ public class Products {
                     }
                 }
             }
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-            }
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-            }
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
-            }
+            @Override public void onChildChanged(DataSnapshot dataSnapshot, String s) {}
+            @Override public void onChildRemoved(DataSnapshot dataSnapshot) {}
+            @Override public void onChildMoved(DataSnapshot dataSnapshot, String s) {}
+            @Override public void onCancelled(DatabaseError databaseError) {Log.w(TAG, "loadPost:onCancelled", databaseError.toException());}
         });
 
         DatabaseReference m2Ref = myRef.child("Product Categories");
         m2Ref.addChildEventListener(new ChildEventListener() {
-            // Retrieve AVAILABLE product categories and prices
-            @Override
+            @Override // Retrieve AVAILABLE product categories and prices
             public void onChildAdded(DataSnapshot snapshot, String previousChildKey) {
                 String prodID = (String) snapshot.getKey();
                 String prodName = (String) snapshot.child("productName").getValue();
@@ -125,6 +114,7 @@ public class Products {
         if (sProducts == null) {
             sProducts = new Products(context);
         }
+        else {Log.d("Tag", "Products: " + sProducts.toString());}
         return sProducts;
     }
 
