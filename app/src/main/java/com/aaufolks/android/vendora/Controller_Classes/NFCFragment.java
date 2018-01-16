@@ -85,17 +85,23 @@ public class NFCFragment extends Fragment {//implements CardEmulationService.Del
         View view = inflater.inflate(R.layout.fragment_nfc, parent, false);
         mTextNFC1 = (TextView) view.findViewById(R.id.NFC_text1);
         mTextNFC2 = (TextView) view.findViewById(R.id.NFC_text2);
-
-        mTextNFC1.setText("You are now less than 20 meters"
-                    + "\naway from vending machine:\n"
-                    + vmName
-                    + "\nat " + vmAddress +".");
-        mTextNFC2.setText("Please place the back of"
-                + "\nyour phone by the above sign"
-                + "\non the machine for 2 seconds"
-                + "\nto pay with " + payment[Products.get(getContext()).getPaymentMethod()]
-                + "\nand get your product!");
+        setText1(); setText2();
         return view;
+    }
+
+    public void setText1() {
+        mTextNFC1.setText("You are now less than 20 meters"
+                        + "\naway from vending machine:\n"
+                        + vmName
+                        + "\nat " + vmAddress +".");
+    }
+
+    public void setText2() {
+        mTextNFC2.setText("Please place the back of"
+                        + "\nyour phone over the above sign"
+                        + "\non the machine for 2 seconds"
+                        + "\nto pay via " + payment[Products.get(getContext()).getPaymentMethod()]
+                        + "\nand get your product!");
     }
 
     @Override
@@ -179,10 +185,7 @@ public class NFCFragment extends Fragment {//implements CardEmulationService.Del
                 int choice = (int) data.getSerializableExtra(ChoosePaymentFragment.EXTRA_CHOICE);
                 Products.get(getContext()).setPaymentMethod(choice);
                 getActivity().invalidateOptionsMenu();
-                mTextNFC2.setText("Please place and hold"
-                        + "\nyour phone over the above sign"
-                        + "\non the machine to pay with " + payment[Products.get(getContext()).getPaymentMethod()]
-                        + "\nand get your product!");
+                setText2();
                 break;
             }
             case 3: {       // DELETING RESERVATIONS

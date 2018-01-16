@@ -446,18 +446,21 @@ public class VMFragment extends SupportMapFragment
 
                 // Create a new MobilePay Payment object.
                 mPayment = new Payment();
+                Log.d("Tag", "MerchantID: " + getString(R.string.merchant_id_generic)); //APPDK0000000000
 
                 // Set the callback URL - deprecated
                 mPayment.setServerCallbackUrl("https://us-central1-luminous-torch-4376.cloudfunctions.net/addMessage");
 
                 // Set the product price.
-                mPayment.setProductPrice(BigDecimal.valueOf(productPrice));
+                mPayment.setProductPrice(BigDecimal.valueOf(1)); //productPrice
+                Log.d("Tag", "Price: " + mPayment.getProductPrice());
 
                 // Set BulkRef for this payment. Payments will be grouped under this tag.
                 mPayment.setBulkRef(productName);
 
                 // Set the order ID. This is your reference and should match your business case. Has to be unique.
                 mPayment.setOrderId(UUID.randomUUID().toString());
+                Log.d("Tag", "OrderID: " + mPayment.getOrderId());
 
                 // Have the SDK create an Intent with the Payment object specified.
                 Intent paymentIntent = MobilePay.getInstance().createPaymentIntent(mPayment);
@@ -550,7 +553,7 @@ public class VMFragment extends SupportMapFragment
                         // The product can now be delivered to the customer.
 
                         showPaymentResultDialog(getString(R.string.payment_result_dialog_success_title),
-                                getString(R.string.payment_result_dialog_success_message, result.getTransactionId()));
+                                getString(R.string.payment_result_dialog_success_message, result.getOrderId()));
 
                         progressCircle = new ProgressDialog(getContext());
                         progressCircle.setCancelable(true);
@@ -570,7 +573,7 @@ public class VMFragment extends SupportMapFragment
                                     String prodStat = (String) dataSnapshot.child(prodNumString).child("productStatus").getValue();
                                     if (prodCat.equals(String.valueOf(Products.get(getContext()).getChosenProduct())) && prodStat.equals("Available")) {
                                         mRRef.child(prodNumString).child("customerID").setValue(Products.get(getContext()).getCustomerId());
-                                        mRRef.child(prodNumString).child("productStatus").setValue("Reserved");
+                                        mRRef.child(prodNumString).child("productStatus").setValue("Hold");
 
                                         progressCircle.dismiss();
                                         mReservation = new Reservation(Products.get(getContext()).getChosenProduct(),

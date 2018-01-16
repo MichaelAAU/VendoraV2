@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import com.aaufolks.android.vendora.Controller_Classes.CongratsActivity;
 import com.aaufolks.android.vendora.Controller_Classes.NFCActivity;
+import com.aaufolks.android.vendora.Model_Classes.MyReservations;
 import com.aaufolks.android.vendora.Model_Classes.Products;
 import com.aaufolks.android.vendora.R;
 
@@ -94,10 +95,13 @@ public class CardEmulationService extends HostApduService {
             progressCircle.setMessage("Please hold on...");
             progressCircle.setIndeterminate(true);
             progressCircle.show();
-            String deviceIDandP = "<" + Products.get(getApplicationContext()).getCustomerId()+">C_ID";
-            byte[] deviceIDBytes = deviceIDandP.getBytes();
-            Log.i(TAG, "Sending device ID & payment method: " + deviceIDandP);
-            return ConcatArrays(deviceIDBytes, SELECT_OK_STATUS_WORD);
+            String deviceOrderPS = "<" + Products.get(getApplicationContext()).getCustomerId()+">C_ID";
+            for (int i = 0; i< MyReservations.get().getMyReservations().size(); i++) {
+                deviceOrderPS = deviceOrderPS + "<" + MyReservations.get().getMyReservations().get(i).getOrderId() + ">O_ID";
+            }
+            byte[] deviceOrderPSBytes = deviceOrderPS.getBytes();
+            Log.i(TAG, "Sending device & order IDs & payment method: " + deviceOrderPS);
+            return ConcatArrays(deviceOrderPSBytes, SELECT_OK_STATUS_WORD);
         } else if (Arrays.equals(SELECT_2ND_APDU, commandApdu)){
             String answer1 = "Thanks";
             byte[] answer1Bytes = answer1.getBytes();

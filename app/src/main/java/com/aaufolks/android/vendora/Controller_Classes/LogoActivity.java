@@ -26,9 +26,6 @@ import java.util.List;
 import com.aaufolks.android.vendora.R;
 import com.google.firebase.auth.FirebaseUser;
 
-import java.util.Timer;
-import java.util.TimerTask;
-
 /**
  * Created by michalisgratsias on 08/11/2016.
  * Rewritten by michalisgratsias on 09/11/2017.
@@ -61,6 +58,7 @@ public class LogoActivity extends AppCompatActivity {
                         }
                     });
         }
+        active = false;
         finish();
     }
 
@@ -81,18 +79,16 @@ public class LogoActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onStop() {
-        super.onStop();
-        active = false;
-    }
-
-    @Override
     public void onResume() {
-        super.onResume(); final MediaPlayer mp = MediaPlayer.create(getApplicationContext(), R.raw.intro); mp.start(); // play sound
-        new Timer().schedule(new TimerTask() {
+        super.onResume();
+        MediaPlayer mp = MediaPlayer.create(LogoActivity.this, R.raw.intro);
+        mp.start(); // play sound
+        mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
-            public void run() {
+            public void onCompletion(MediaPlayer mp) {
                 if (active) {
+                    //mp.stop();
+                    //if (mp != null) mp.release();
                     startActivityForResult( // Create Authentication instance on default app and sign-in by building a sign-in intent
                             AuthUI.getInstance().createSignInIntentBuilder()
                                     .setLogo(R.drawable.vendora_small_icon)
@@ -104,7 +100,7 @@ public class LogoActivity extends AppCompatActivity {
                                     .build(), RC_SIGN_IN); // RC = Request code for sign-in
                 }
             }
-        }, 1000); // short delay
+        });
     }
 
     @Override
@@ -116,14 +112,22 @@ public class LogoActivity extends AppCompatActivity {
 
     @MainThread
     private void handleSignInResponse(int resultCode, Intent data) {    // extracting the ID token from the response of the result intent
-        IdpResponse response = IdpResponse.fromResultIntent(data);      // that the Identity Provider (idp) returned
+        final IdpResponse response = IdpResponse.fromResultIntent(data);      // that the Identity Provider (idp) returned
         if (resultCode == RESULT_OK) {                                  // Successfully signed in
-            final MediaPlayer mp = MediaPlayer.create(getApplicationContext(), R.raw.success); mp.start(); // play sound
-            startSignedInActivity(response); finish(); return;
+            MediaPlayer mp2 = MediaPlayer.create(getApplicationContext(), R.raw.success);
+            mp2.start();                                                // play sound
+            startSignedInActivity(response);
+            finish(); return;
         } else {                                                        // Sign in failed
-            if (response == null) {showSnackbar(R.string.sign_in_cancelled); return;} // User pressed back button
-            if (response.getErrorCode() == ErrorCodes.NO_NETWORK) {showSnackbar(R.string.no_internet_connection); return;}
-            if (response.getErrorCode() == ErrorCodes.UNKNOWN_ERROR) {showSnackbar(R.string.unknown_error); return;}
+            if (response == null) {
+                showSnackbar(R.string.sign_in_cancelled);
+                return;}                                                // User pressed back button
+            if (response.getErrorCode() == ErrorCodes.NO_NETWORK) {
+                showSnackbar(R.string.no_internet_connection);
+                return;}
+            if (response.getErrorCode() == ErrorCodes.UNKNOWN_ERROR) {
+                showSnackbar(R.string.unknown_error);
+                return;}
         }
         showSnackbar(R.string.unknown_sign_in_response);
     }
