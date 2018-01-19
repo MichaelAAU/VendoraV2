@@ -8,9 +8,9 @@ package com.aaufolks.android.vendora.Model_Classes;
 public class Reservation {
 
     private int mProductId;
-    private String mOrderId;
     private String mVMId;
     private String mVMName;
+    private String mOrderId;
 
     public Reservation(int productId, String vmId, String vmName, String orderId) {
         mProductId = productId;
@@ -43,11 +43,7 @@ public class Reservation {
         mVMName = VMName;
     }
 
-    public String getOrderId() {
-        return mOrderId;
-    }
+    public String getOrderId() { return mOrderId; }
 
-    public void setOrderId(String orderId) {
-        mOrderId = orderId;
-    }
+    public void setOrderId(String orderId) { this.mOrderId = orderId; }
 }

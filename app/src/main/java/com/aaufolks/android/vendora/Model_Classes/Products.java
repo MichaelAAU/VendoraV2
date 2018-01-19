@@ -35,6 +35,7 @@ public class Products {
     private int paymentMethod;
     private int chosenProduct;
     private String currentMachine;
+    private Reservation mReservation;
     private ArrayList<ImageData> mImagesData = new ArrayList<>();
 
     public Products(final Context context) {
@@ -53,17 +54,28 @@ public class Products {
 
         DatabaseReference m1Ref = myRef.child("Products & Status");
         m1Ref.addChildEventListener(new ChildEventListener() {
-            @Override // Retrieve all available products as they are in the database
+            @Override // Retrieve all available product IDs as they are in the database from all VMs
             public void onChildAdded(DataSnapshot snapshot, String previousChildKey) {
                 String vmID = (String) snapshot.getKey();
                 Log.d("Tag", "vmId: " + vmID);
-                for (int i = 1; i < snapshot.getChildrenCount(); i++) {
+                for (int i = 1; i <= snapshot.getChildrenCount(); i++) {
                     String prodNumString = String.valueOf(i);
                     Log.d("Tag", "prod: " + snapshot.child(prodNumString).getKey());
                     String prodCat = (String) snapshot.child(prodNumString).child("productCategory").getValue();
                     String prodStat = (String) snapshot.child(prodNumString).child("productStatus").getValue();
                     if (prodStat.equals("Available") && !mAvailable.contains(prodCat)) {
                         mAvailable.add(prodCat);
+                    }
+                    if (prodStat.equals("Hold") || prodStat.equals("Reserved")) {
+                        String prodCustomer = (String) snapshot.child(prodNumString).child("customerID").getValue();
+                        if (prodCustomer.equals(customerId)) {
+                            mReservation = new Reservation(parseInt(prodCat), vmID, "Unknown VM", "Unknown");
+                            Log.d("Tag", "vmId: " + vmID + " prodId: " + parseInt(prodCat));
+                            MyReservations.get().getMyReservations().add(mReservation);
+                        }
+                        if (!mAvailable.contains(prodCat)) {
+                            mAvailable.add(prodCat);
+                        }
                     }
                 }
             }

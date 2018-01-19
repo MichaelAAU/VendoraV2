@@ -7,6 +7,7 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -211,17 +212,19 @@ public class NFCFragment extends Fragment {//implements CardEmulationService.Del
                             String prodCat = (String) dataSnapshot.child(prodNumString).child("productCategory").getValue();
                             String prodStat = (String) dataSnapshot.child(prodNumString).child("productStatus").getValue();
                             String prodCust = (String) dataSnapshot.child(prodNumString).child("customerID").getValue();
-                            if (prodCat.equals(String.valueOf(Products.get(getContext()).getChosenProduct())) &&
-                                    prodStat.equals("Reserved")) {
+                            if (prodCat.equals(String.valueOf(MyReservations.get().getMyReservations().get(choice).getProductId())) &&
+                                    (prodStat.equals("Reserved") || prodStat.equals("Hold")) &&
+                                    prodCust.equals(Products.get(getContext()).getCustomerId())) {
                                 mRRef.child(prodNumString).child("customerID").setValue(null);
                                 mRRef.child(prodNumString).child("productStatus").setValue("Available");
+                                mRRef.child(prodNumString).child("orderID").setValue(null);
                                 progressCircle.dismiss();
-                                MyReservations.get().getMyReservations().remove(choice);
                                 final MediaPlayer mp = MediaPlayer.create(getContext(), R.raw.success);
                                 mp.start();
                                 Toast.makeText(getContext(), "Reservation of: " + Products.get(getContext()).getProduct(MyReservations.get().
-                                        getMyReservations().get(choice).getProductId()).getProductName() + " canceled!", Toast.LENGTH_SHORT).show();
+                                        getMyReservations().get(choice).getProductId()).getProductName() + " is canceled!", Toast.LENGTH_SHORT).show();
                                 getActivity().invalidateOptionsMenu();
+                                MyReservations.get().getMyReservations().remove(choice);
                                 cancelled = true;
                                 break;
                             }

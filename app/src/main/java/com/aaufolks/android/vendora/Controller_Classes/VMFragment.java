@@ -442,7 +442,7 @@ public class VMFragment extends SupportMapFragment
             return;
         }
         switch (requestCode) {
-            case 1: {       // CALLING MOBILE PAY FOR RESERVATION (FROM INFO WINDOW)
+            case 1: {       // CALLING   M O B I L E   P A Y   FOR RESERVATION (FROM INFO WINDOW)
 
                 // Create a new MobilePay Payment object.
                 mPayment = new Payment();
@@ -452,7 +452,7 @@ public class VMFragment extends SupportMapFragment
                 mPayment.setServerCallbackUrl("https://us-central1-luminous-torch-4376.cloudfunctions.net/addMessage");
 
                 // Set the product price.
-                mPayment.setProductPrice(BigDecimal.valueOf(1)); //productPrice
+                mPayment.setProductPrice(BigDecimal.valueOf(productPrice));
                 Log.d("Tag", "Price: " + mPayment.getProductPrice());
 
                 // Set BulkRef for this payment. Payments will be grouped under this tag.
@@ -502,8 +502,7 @@ public class VMFragment extends SupportMapFragment
                 FirebaseDatabase database = FirebaseDatabase.getInstance();
                 DatabaseReference myRef = database.getReference();
                 cancelled = false;
-                final DatabaseReference mRRef = myRef.child("Products & Status").child(MyReservations.get()
-                        .getMyReservations().get(choice).getVMId());
+                final DatabaseReference mRRef = myRef.child("Products & Status").child(MyReservations.get().getMyReservations().get(choice).getVMId());
                 mRRef.addListenerForSingleValueEvent(new ValueEventListener() {
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         for (int i = 1; i <= dataSnapshot.getChildrenCount(); i++) {
@@ -511,21 +510,19 @@ public class VMFragment extends SupportMapFragment
                             String prodCat = (String) dataSnapshot.child(prodNumString).child("productCategory").getValue();
                             String prodStat = (String) dataSnapshot.child(prodNumString).child("productStatus").getValue();
                             String prodCust = (String) dataSnapshot.child(prodNumString).child("customerID").getValue();
-                            if (prodCat.equals(String.valueOf(Products.get(getContext()).getChosenProduct())) && prodStat.equals("Reserved") && prodCust.equals(Products.get(getContext()).getCustomerId())) {
+                            if (prodCat.equals(String.valueOf(MyReservations.get().getMyReservations().get(choice).getProductId())) &&
+                                    (prodStat.equals("Reserved") || prodStat.equals("Hold")) &&
+                                    prodCust.equals(Products.get(getContext()).getCustomerId())) {
                                 mRRef.child(prodNumString).child("customerID").setValue(null);
                                 mRRef.child(prodNumString).child("productStatus").setValue("Available");
+                                mRRef.child(prodNumString).child("orderID").setValue(null);
                                 progressCircle.dismiss();
-                                MyReservations.get().getMyReservations().remove(choice);
-                                vmsWProduct.get(mLastSelectedMarkerIndex).setProdAvailable(true);
-                                mLastSelectedMarker.setSnippet("Address : " + vmsWProduct.get(mLastSelectedMarkerIndex).getVMAddress()
-                                        + "\n" + productName + " is " + (vmsWProduct.get(mLastSelectedMarkerIndex).isProdAvailable() ? "AVAILABLE" : "RESERVED")
-                                        + "\nDistance from you : " + vmsWProduct.get(mLastSelectedMarkerIndex).getDistanceFromYou() + " meters"
-                                        + "\nTAP TO MAKE A RESERVATION");
-                                mLastSelectedMarker.showInfoWindow();
                                 final MediaPlayer mp = MediaPlayer.create(getContext(), R.raw.success);
                                 mp.start();
-                                Toast.makeText(getContext(), "Reservation of: " + productName + " canceled!", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getContext(), "Reservation of: " + Products.get(getContext()).getProduct(MyReservations.get().
+                                        getMyReservations().get(choice).getProductId()).getProductName() + " is canceled!", Toast.LENGTH_SHORT).show();
                                 getActivity().invalidateOptionsMenu();
+                                MyReservations.get().getMyReservations().remove(choice);
                                 cancelled = true;
                                 break;
                             }
@@ -574,6 +571,7 @@ public class VMFragment extends SupportMapFragment
                                     if (prodCat.equals(String.valueOf(Products.get(getContext()).getChosenProduct())) && prodStat.equals("Available")) {
                                         mRRef.child(prodNumString).child("customerID").setValue(Products.get(getContext()).getCustomerId());
                                         mRRef.child(prodNumString).child("productStatus").setValue("Hold");
+                                        mRRef.child(prodNumString).child("orderID").setValue(mPayment.getOrderId());
 
                                         progressCircle.dismiss();
                                         mReservation = new Reservation(Products.get(getContext()).getChosenProduct(),
@@ -581,6 +579,7 @@ public class VMFragment extends SupportMapFragment
                                                 vmsWProduct.get(mLastSelectedMarkerIndex).getVMName(),
                                                 mPayment.getOrderId());
                                         MyReservations.get().getMyReservations().add(mReservation);
+
                                         vmsWProduct.get(mLastSelectedMarkerIndex).setProdAvailable(false);
                                         mLastSelectedMarker.setSnippet("Address : " + vmsWProduct.get(mLastSelectedMarkerIndex).getVMAddress()
                                                 + "\n" + productName + " is " + (vmsWProduct.get(mLastSelectedMarkerIndex).isProdAvailable() ? "AVAILABLE" : "RESERVED")

@@ -9,6 +9,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 
 import com.aaufolks.android.vendora.Model_Classes.Products;
@@ -20,11 +21,24 @@ import com.firebase.ui.auth.AuthUI.IdpConfig;
 import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
 
+import java.io.UnsupportedEncodingException;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.InvalidParameterSpecException;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.aaufolks.android.vendora.R;
 import com.google.firebase.auth.FirebaseUser;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
 
 /**
  * Created by michalisgratsias on 08/11/2016.
@@ -37,6 +51,15 @@ public class LogoActivity extends AppCompatActivity {
     private static final String GOOGLE_PRIVACY_POLICY_URL = "https://www.google.com/policies/privacy/";
     private static final int RC_SIGN_IN = 100; // Request code for sign-in
     static boolean active = false;
+
+    String password = "db760abd8f6403fa";
+    String message = password + "done";
+    SecretKey secret = generateKey();
+    byte[] encrMessage = encryptMsg(message, secret);
+    String decrMessage = decryptMsg(encrMessage, secret);
+
+    public LogoActivity() throws NoSuchPaddingException, UnsupportedEncodingException, InvalidKeyException, NoSuchAlgorithmException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException, InvalidParameterSpecException, InvalidKeySpecException {
+    }
 
     public static Intent createIntent(Context context) {
         return new Intent(context, LogoActivity.class);
@@ -150,5 +173,33 @@ public class LogoActivity extends AppCompatActivity {
     private void showSnackbar(@StringRes int errorMessageRes) {
         View mRootView = findViewById(R.id.logo_screen);
         Snackbar.make(mRootView, errorMessageRes, Snackbar.LENGTH_LONG).show();
+    }
+
+    public SecretKey generateKey() throws NoSuchAlgorithmException, InvalidKeySpecException {
+        return new SecretKeySpec(password.getBytes(), "AES");
+    }
+
+    public static byte[] encryptMsg(String message, SecretKey secret) throws NoSuchAlgorithmException,
+            NoSuchPaddingException, InvalidKeyException, InvalidParameterSpecException,
+            IllegalBlockSizeException, BadPaddingException, UnsupportedEncodingException {
+        /* Encrypt the message. */
+        Cipher cipher = null;
+        cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
+        cipher.init(Cipher.ENCRYPT_MODE, secret);
+        byte[] cipherText = cipher.doFinal(message.getBytes("UTF-8"));
+        Log.d("Tag", "Ciphertext: " + cipherText);
+        return cipherText;
+    }
+
+    public static String decryptMsg(byte[] cipherText, SecretKey secret)
+            throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidParameterSpecException, InvalidAlgorithmParameterException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException, UnsupportedEncodingException
+    {
+    /* Decrypt the message, given derived encContentValues and initialization vector. */
+        Cipher cipher = null;
+        cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
+        cipher.init(Cipher.DECRYPT_MODE, secret);
+        String decryptString = new String(cipher.doFinal(cipherText), "UTF-8");
+        Log.d("Tag", "Plaintext: " + decryptString);
+        return decryptString;
     }
 }

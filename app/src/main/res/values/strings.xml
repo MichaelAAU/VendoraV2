@@ -7,7 +7,7 @@
     <string name="manage_reservations_title">Delete a reservation:</string>
     <string name="service_name">Phone Card Emulation</string>
     <string name="card_title">Device ID &amp; Payment Card</string>
-    <string name="merchant_id_generic">APPDK9142753001</string>
+    <string name="merchant_id_generic">APPDK0000000000</string>
     <string name="payment_result_dialog_success_title">MobilePay Succeeded</string>
     <string name="payment_result_dialog_positive">OK</string>
     <string name="payment_result_dialog_success_message">You have now RESERVED your product with MobilePay.\n\nYour MobilePay OrderId is: \n \'%1$s\'.</string>
