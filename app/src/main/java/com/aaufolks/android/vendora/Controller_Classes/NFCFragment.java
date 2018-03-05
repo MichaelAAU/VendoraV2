@@ -65,11 +65,11 @@ public class NFCFragment extends Fragment {//implements CardEmulationService.Del
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {   // it is Public because it can be called by various activities hosting it
+    public void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        vmName = (String) getArguments().getSerializable(ARG_VM_NAME);   // accessing Fragment arguments for productName
+        vmName = (String) getArguments().getSerializable(ARG_VM_NAME);   // accessing Fragment arguments for vmName
         vmAddress = (String) getArguments().getSerializable(ARG_VM_ADDRESS);
         Products.get(getContext()).setCurrentMachine(vmName);
         ((NFCActivity)getActivity()).getSupportActionBar().setTitle("Find Machine");
@@ -215,9 +215,9 @@ public class NFCFragment extends Fragment {//implements CardEmulationService.Del
                             if (prodCat.equals(String.valueOf(MyReservations.get().getMyReservations().get(choice).getProductId())) &&
                                     (prodStat.equals("Reserved") || prodStat.equals("Hold")) &&
                                     prodCust.equals(Products.get(getContext()).getCustomerId())) {
-                                mRRef.child(prodNumString).child("customerID").setValue(null);
-                                mRRef.child(prodNumString).child("productStatus").setValue("Available");
-                                mRRef.child(prodNumString).child("orderID").setValue(null);
+                                //mRRef.child(prodNumString).child("customerID").setValue(null);
+                                mRRef.child(prodNumString).child("productStatus").setValue("Clear");
+                                //mRRef.child(prodNumString).child("orderID").setValue(null);
                                 progressCircle.dismiss();
                                 final MediaPlayer mp = MediaPlayer.create(getContext(), R.raw.success);
                                 mp.start();

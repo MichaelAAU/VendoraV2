@@ -229,9 +229,9 @@ public class CongratsFragment extends Fragment {
                             if (prodCat.equals(String.valueOf(MyReservations.get().getMyReservations().get(choice).getProductId())) &&
                                     (prodStat.equals("Reserved") || prodStat.equals("Hold")) &&
                                     prodCust.equals(Products.get(getContext()).getCustomerId())) {
-                                mRRef.child(prodNumString).child("customerID").setValue(null);
-                                mRRef.child(prodNumString).child("productStatus").setValue("Available");
-                                mRRef.child(prodNumString).child("orderID").setValue(null);
+                                //mRRef.child(prodNumString).child("customerID").setValue(null);
+                                mRRef.child(prodNumString).child("productStatus").setValue("Clear");
+                                //mRRef.child(prodNumString).child("orderID").setValue(null);
                                 progressCircle.dismiss();
                                 final MediaPlayer mp = MediaPlayer.create(getContext(), R.raw.success);
                                 mp.start();

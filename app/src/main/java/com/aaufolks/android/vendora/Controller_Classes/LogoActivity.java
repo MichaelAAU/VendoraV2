@@ -137,10 +137,13 @@ public class LogoActivity extends AppCompatActivity {
     private void handleSignInResponse(int resultCode, Intent data) {    // extracting the ID token from the response of the result intent
         final IdpResponse response = IdpResponse.fromResultIntent(data);      // that the Identity Provider (idp) returned
         if (resultCode == RESULT_OK) {                                  // Successfully signed in
+            //Products.get(getApplicationContext()).getProducts();
             MediaPlayer mp2 = MediaPlayer.create(getApplicationContext(), R.raw.success);
             mp2.start();                                                // play sound
+            showSnackbar(R.string.successful_sign_in);
             startSignedInActivity(response);
-            finish(); return;
+            finish();
+            return;
         } else {                                                        // Sign in failed
             if (response == null) {
                 showSnackbar(R.string.sign_in_cancelled);

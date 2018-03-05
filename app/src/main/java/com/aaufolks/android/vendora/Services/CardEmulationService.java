@@ -20,9 +20,12 @@ import com.aaufolks.android.vendora.R;
 
 import java.util.Arrays;
 
+import javax.crypto.Cipher;
+import javax.crypto.SecretKey;
+
 /**
  * This is a sample APDU Service which demonstrates how to interface with the card emulation support
- * added in Android 4.4, KitKat.
+ * added in Android 4.4, KitKat. (AID = Application Identifier)
  *
  * <p>This sample will be invoked for any terminals selecting AIDs of 0xF11111111, 0xF22222222, or
  * 0xF33333333. See src/main/res/xml/aid_list.xml for more details.
@@ -87,6 +90,9 @@ public class CardEmulationService extends HostApduService {
         Log.i(TAG, "Received APDU: " + ByteArrayToHexString(commandApdu));
         // If the APDU matches the SELECT AID command for this service,
         // send the device ID & payment method, followed by a SELECT_OK status trailer (0x9000).
+        // int resultLength1 = commandApdu.length;                              //Count length
+        //byte[] commandApdu = Arrays.copyOf(commandApdu, resultLength1-36);    //separate command
+        //byte[] random = Arrays.copyOfRange(commandApdu, 11, 46);              //separate random
         if (Arrays.equals(SELECT_1ST_APDU, commandApdu)) {
             Context appContext = this.getApplicationContext();
             progressCircle = new ProgressDialog(appContext);
@@ -95,13 +101,20 @@ public class CardEmulationService extends HostApduService {
             progressCircle.setMessage("Please hold on...");
             progressCircle.setIndeterminate(true);
             progressCircle.show();
-            String deviceOrderPS = "<" + Products.get(getApplicationContext()).getCustomerId()+">C_ID";
+            int random = (int)(Math.random() * 100);
+            String deviceIdOrderIds = "<<#" + String.valueOf(random) + "#[AUTH](" + Products.get(getApplicationContext()).getCustomerId();
             for (int i = 0; i< MyReservations.get().getMyReservations().size(); i++) {
-                deviceOrderPS = deviceOrderPS + "<" + MyReservations.get().getMyReservations().get(i).getOrderId() + ">O_ID";
+                if (i == 0) deviceIdOrderIds = deviceIdOrderIds + ":"; else deviceIdOrderIds = deviceIdOrderIds + ";";
+                deviceIdOrderIds = deviceIdOrderIds + MyReservations.get().getMyReservations().get(i).getOrderId();
             }
-            byte[] deviceOrderPSBytes = deviceOrderPS.getBytes();
-            Log.i(TAG, "Sending device & order IDs & payment method: " + deviceOrderPS);
-            return ConcatArrays(deviceOrderPSBytes, SELECT_OK_STATUS_WORD);
+            deviceIdOrderIds = deviceIdOrderIds + ")>>";
+            byte[] deviceIdOrderIdsBytes = deviceIdOrderIds.getBytes();
+            //String password = "db760abd8f6403fa";             //for key creation
+            //String message = random + deviceOrderPSBytes;     //create full message
+            //SecretKey secret = generateKey();                 //generate key
+            //byte[] encrMessage = encryptMsg(message, secret); //encrypt full message
+            Log.i(TAG, "Sending device & order IDs & payment method: " + deviceIdOrderIds);
+            return ConcatArrays(deviceIdOrderIdsBytes, SELECT_OK_STATUS_WORD);
         } else if (Arrays.equals(SELECT_2ND_APDU, commandApdu)){
             String answer1 = "Thanks";
             byte[] answer1Bytes = answer1.getBytes();
@@ -208,4 +221,21 @@ public class CardEmulationService extends HostApduService {
             }
         }
     }
+    /*
+    public SecretKey generateKey() throws NoSuchAlgorithmException, InvalidKeySpecException {
+        return new SecretKeySpec(password.getBytes(), "AES");
+    }
+
+    public static byte[] encryptMsg(String message, SecretKey secret) throws NoSuchAlgorithmException,
+            NoSuchPaddingException, InvalidKeyException, InvalidParameterSpecException,
+            IllegalBlockSizeException, BadPaddingException, UnsupportedEncodingException {
+        // Encrypt the message. //
+        Cipher cipher = null;
+        cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
+        cipher.init(Cipher.ENCRYPT_MODE, secret);
+        byte[] cipherText = cipher.doFinal(message.getBytes("UTF-8"));
+        Log.d("Tag", "Ciphertext: " + cipherText);
+        return cipherText;
+    }
+     */
 }

@@ -513,9 +513,9 @@ public class VMFragment extends SupportMapFragment
                             if (prodCat.equals(String.valueOf(MyReservations.get().getMyReservations().get(choice).getProductId())) &&
                                     (prodStat.equals("Reserved") || prodStat.equals("Hold")) &&
                                     prodCust.equals(Products.get(getContext()).getCustomerId())) {
-                                mRRef.child(prodNumString).child("customerID").setValue(null);
-                                mRRef.child(prodNumString).child("productStatus").setValue("Available");
-                                mRRef.child(prodNumString).child("orderID").setValue(null);
+                                //mRRef.child(prodNumString).child("customerID").setValue(null);
+                                mRRef.child(prodNumString).child("productStatus").setValue("Clear");
+                                //mRRef.child(prodNumString).child("orderID").setValue(null);
                                 progressCircle.dismiss();
                                 final MediaPlayer mp = MediaPlayer.create(getContext(), R.raw.success);
                                 mp.start();
@@ -571,7 +571,7 @@ public class VMFragment extends SupportMapFragment
                                     if (prodCat.equals(String.valueOf(Products.get(getContext()).getChosenProduct())) && prodStat.equals("Available")) {
                                         mRRef.child(prodNumString).child("customerID").setValue(Products.get(getContext()).getCustomerId());
                                         mRRef.child(prodNumString).child("productStatus").setValue("Hold");
-                                        mRRef.child(prodNumString).child("orderID").setValue(mPayment.getOrderId());
+                                        //mRRef.child(prodNumString).child("orderID").setValue(mPayment.getOrderId());
 
                                         progressCircle.dismiss();
                                         mReservation = new Reservation(Products.get(getContext()).getChosenProduct(),
